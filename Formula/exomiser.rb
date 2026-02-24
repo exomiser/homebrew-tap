@@ -17,22 +17,12 @@ class Exomiser < Formula
   def install
     # Install the JAR and bundled configuration/example files.
     libexec.install Dir["*"]
-    # libexec.install "exomiser-cli-#{version}.jar"
-    bin.write_jar_script libexec/"exomiser-cli-#{version}.jar", "exomiser", "--sun-misc-unsafe-memory-access=allow"
-
-     # Create a wrapper script so users can invoke Exomiser as `exomiser`
-     # from anywhere, without needing to remember the java invocation.
-     # (bin/"exomiser").write <<~SHELL
-       #!/bin/bash
-       # Wrapper script for Exomiser CLI
-       # Memory allocation defaults to 8 GB. Override with EXOMISER_MEMORY_GB:
-       #   export EXOMISER_MEMORY_GB=12
-      #JAVA_BIN="#{Formula["openjdk@21"].opt_bin}/java"
-      #MEM="${EXOMISER_MEMORY_GB:-8}"
-      #JAR="#{libexec}/exomiser-cli-#{version}.jar"
-      #exec "$JAVA_BIN" -Xmx"${MEM}g" -jar "$JAR" "$@"
-     #SHELL
-     #chmod 0755, bin/"exomiser"
+    # Create a wrapper script using Homebrew's idiomatic method.
+        # --sun-misc-unsafe-memory-access=allow suppresses JVM warnings from
+        # bioinformatics libraries that use internal Java APIs.
+        bin.write_jar_script libexec/"exomiser-cli-#{version}.jar", "exomiser",
+                             "--sun-misc-unsafe-memory-access=allow",
+                             "-Dspring.config.location=#{libexec}/application.properties"
   end
 
   def caveats
@@ -80,12 +70,11 @@ class Exomiser < Formula
       MEMORY
       ─────────────────────────────────────────────────────────────────────
 
-      By default the wrapper allocates 8 GB of RAM. If your analysis fails
-      due to lack of RAM, increase this by setting:
+      By default the JVM allocates a fraction of available system RAM.
+      For genome-scale analyses you may need more. Set JAVA_TOOL_OPTIONS
+      before running exomiser to override this, for example:
 
-        export EXOMISER_MEMORY_GB=12
-
-      before running exomiser.
+        export JAVA_TOOL_OPTIONS="-Xmx12g"
 
       ─────────────────────────────────────────────────────────────────────
       FURTHER INFORMATION
