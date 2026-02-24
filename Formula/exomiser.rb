@@ -33,7 +33,7 @@ class Exomiser < Formula
 #       exec "$JAVA_BIN" -Xmx"${MEM}g" -jar "$JAR" "$@"
 #     SHELL
 #     chmod 0755, bin/"exomiser"
-#   end
+  end
 
   def caveats
     <<~EOS
