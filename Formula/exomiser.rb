@@ -17,22 +17,22 @@ class Exomiser < Formula
   def install
     # Install the JAR and bundled configuration/example files.
     libexec.install Dir["*"]
-#     libexec.install "exomiser-cli-#{version}.jar"
+    # libexec.install "exomiser-cli-#{version}.jar"
     bin.write_jar_script libexec/"exomiser-cli-#{version}.jar", "exomiser", "--sun-misc-unsafe-memory-access=allow"
 
-#     # Create a wrapper script so users can invoke Exomiser as `exomiser`
-#     # from anywhere, without needing to remember the java invocation.
-#     (bin/"exomiser").write <<~SHELL
-#       #!/bin/bash
-#       # Wrapper script for Exomiser CLI
-#       # Memory allocation defaults to 8 GB. Override with EXOMISER_MEMORY_GB:
-#       #   export EXOMISER_MEMORY_GB=12
-#       JAVA_BIN="#{Formula["openjdk@21"].opt_bin}/java"
-#       MEM="${EXOMISER_MEMORY_GB:-8}"
-#       JAR="#{libexec}/exomiser-cli-#{version}.jar"
-#       exec "$JAVA_BIN" -Xmx"${MEM}g" -jar "$JAR" "$@"
-#     SHELL
-#     chmod 0755, bin/"exomiser"
+     # Create a wrapper script so users can invoke Exomiser as `exomiser`
+     # from anywhere, without needing to remember the java invocation.
+     # (bin/"exomiser").write <<~SHELL
+       #!/bin/bash
+       # Wrapper script for Exomiser CLI
+       # Memory allocation defaults to 8 GB. Override with EXOMISER_MEMORY_GB:
+       #   export EXOMISER_MEMORY_GB=12
+      #JAVA_BIN="#{Formula["openjdk@21"].opt_bin}/java"
+      #MEM="${EXOMISER_MEMORY_GB:-8}"
+      #JAR="#{libexec}/exomiser-cli-#{version}.jar"
+      #exec "$JAVA_BIN" -Xmx"${MEM}g" -jar "$JAR" "$@"
+     #SHELL
+     #chmod 0755, bin/"exomiser"
   end
 
   def caveats
