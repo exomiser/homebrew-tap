@@ -21,8 +21,8 @@ class Exomiser < Formula
         # --sun-misc-unsafe-memory-access=allow suppresses JVM warnings from
         # bioinformatics libraries that use internal Java APIs.
         bin.write_jar_script libexec/"exomiser-cli-#{version}.jar", "exomiser",
-                             "--sun-misc-unsafe-memory-access=allow",
-                             "-Dspring.config.location=#{libexec}/application.properties"
+                             "--sun-misc-unsafe-memory-access=allow \
+                             -Dspring.config.location=#{libexec}/application.properties"
   end
 
   def caveats
