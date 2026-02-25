@@ -18,10 +18,9 @@ class Exomiser < Formula
     # Install the JAR and bundled configuration/example files.
     libexec.install Dir["*"]
     # Create a wrapper script using Homebrew's idiomatic method.
-        # --sun-misc-unsafe-memory-access=allow suppresses JVM warnings from
-        # bioinformatics libraries that use internal Java APIs.
+        # --sun-misc-unsafe-memory-access=allow suppresses JVM warnings from native libraries that use internal Java APIs.
         bin.write_jar_script libexec/"exomiser-cli-#{version}.jar", "exomiser",
-                             "--sun-misc-unsafe-memory-access=allow -Dspring.config.location=#{libexec}/application.properties"
+                             "-Dspring.config.location=#{libexec}/application.properties"
   end
 
   def caveats
