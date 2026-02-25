@@ -1,7 +1,7 @@
 class Exomiser < Formula
   desc "Phenotype-driven prioritisation of rare disease causing variants from whole-exome and whole-genome sequencing data"
   homepage "https://github.com/exomiser/Exomiser/"
-  version "15.0.0"
+  version "14.1.0"
 
   # Distribution zip from the Monarch Initiative data repository.
   # Update the URL and sha256 checksum when a new version is released.
