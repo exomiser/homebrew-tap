@@ -1,7 +1,7 @@
 class Exomiser < Formula
   desc "Phenotype-driven prioritisation of rare disease causing variants from whole-exome and whole-genome sequencing data"
   homepage "https://github.com/exomiser/Exomiser/"
-  version "14.1.0"
+  version "15.0.0"
 
   # Distribution zip from the Monarch Initiative data repository.
   # Update the URL and sha256 checksum when a new version is released.
@@ -63,7 +63,9 @@ class Exomiser < Formula
 
       5. Run a test analysis to confirm everything is working:
 
-           exomiser analyse --analysis #{libexec}/examples/test-analysis-exome.yml
+           exomiser analyse --analysis #{libexec}/examples/preset-exome-analysis.yml \
+            --vcf #{libexec}/examples/Pfeiffer.vcf.gz --assembly hg19 \
+            --sample #{libexec}/examples/pfeiffer-phenopacket.yml
 
       ─────────────────────────────────────────────────────────────────────
       MEMORY
@@ -78,6 +80,9 @@ class Exomiser < Formula
       ─────────────────────────────────────────────────────────────────────
       FURTHER INFORMATION
       ─────────────────────────────────────────────────────────────────────
+
+      Exomiser Homebrew documentation:
+        https://exomiser.readthedocs.io/en/stable/installation.html#linux-macos-installation-via-homebrew
 
       Full documentation:
         https://exomiser.readthedocs.io
