@@ -11,7 +11,7 @@ class Exomiser < Formula
   license "AGPL-3.0"
 
   # Exomiser requires Java 21 or above.
-  depends_on "openjdk@21"
+  depends_on "openjdk@25"
 
   # No compiled code — Exomiser ships as a pre-built JAR.
   def install
