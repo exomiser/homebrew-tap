@@ -22,26 +22,23 @@ class Exomiser < Formula
   # No compiled code — Exomiser ships as a pre-built JAR.
   def install
     libexec.install Dir["*"]
+
     bin.write_jar_script libexec/"exomiser-cli-#{version}.jar", "exomiser",
                          "--sun-misc-unsafe-memory-access=allow -Dspring.config.location=#{exomiser_home}/application.properties"
   end
 
   # post_install runs after the sandbox is lifted, allowing writes to $HOME.
   def post_install
-    exomiser_home = Pathname.new(Dir.home)/".exomiser"
-    exomiser_data = exomiser_home/"data"
-    exomiser_config = exomiser_home/"application.properties"
-
     exomiser_home.mkpath
-    exomiser_data.mkpath
+    (exomiser_home/"data").mkpath
 
-    unless exomiser_config.exist?
+    unless (exomiser_home/"application.properties").exist?
       config = (libexec/"application.properties").read
-      config = config.sub(/^exomiser\.data-directory=.*$/, "exomiser.data-directory=#{exomiser_data}")
-      config = config.sub(/^#?\s*exomiser\.hg19\.data-version=.*$/, "exomiser.hg19.data-version=#{DATA_VERSION}")
-      config = config.sub(/^#?\s*exomiser\.hg38\.data-version=.*$/, "exomiser.hg38.data-version=#{DATA_VERSION}")
+      config = config.sub(/^exomiser\.data-directory=.*$/,               "exomiser.data-directory=#{exomiser_home}/data")
+      config = config.sub(/^#?\s*exomiser\.hg19\.data-version=.*$/,     "exomiser.hg19.data-version=#{DATA_VERSION}")
+      config = config.sub(/^#?\s*exomiser\.hg38\.data-version=.*$/,     "exomiser.hg38.data-version=#{DATA_VERSION}")
       config = config.sub(/^#?\s*exomiser\.phenotype\.data-version=.*$/, "exomiser.phenotype.data-version=#{DATA_VERSION}")
-      exomiser_config.write config
+      (exomiser_home/"application.properties").write config
     end
   end
 
@@ -114,5 +111,13 @@ class Exomiser < Formula
   test do
     output = shell_output("#{bin}/exomiser --version 2>&1", 0)
     assert_match version.to_s, output
+  end
+
+  private
+
+  # Defined as a method rather than a constant so that Dir.home is evaluated
+  # at runtime (outside the Homebrew sandbox) rather than at load time.
+  def exomiser_home
+    Pathname.new(Dir.home)/".exomiser"
   end
 end
