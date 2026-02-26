@@ -23,23 +23,46 @@ class Exomiser < Formula
   def install
     libexec.install Dir["*"]
 
-    bin.write_jar_script libexec/"exomiser-cli-#{version}.jar", "exomiser",
-                         "--sun-misc-unsafe-memory-access=allow -Dspring.config.location=#{exomiser_home}/application.properties"
-  end
+    # Hand-rolled wrapper script so we can bootstrap ~/.exomiser on first run.
+    # write_jar_script cannot be used here as it doesn't support this logic,
+    # and post_install is also sandboxed from writing to $HOME.
+    # The wrapper runs as the user at invocation time, outside any sandbox.
+    (bin/"exomiser").write <<~SHELL
+      #!/bin/bash
+      set -euo pipefail
 
-  # post_install runs after the sandbox is lifted, allowing writes to $HOME.
-  def post_install
-    exomiser_home.mkpath
-    (exomiser_home/"data").mkpath
+      EXOMISER_HOME="${HOME}/.exomiser"
+      CONFIG_FILE="${EXOMISER_HOME}/application.properties"
+      TEMPLATE="#{libexec}/application.properties"
 
-    unless (exomiser_home/"application.properties").exist?
-      config = (libexec/"application.properties").read
-      config = config.sub(/^exomiser\.data-directory=.*$/,               "exomiser.data-directory=#{exomiser_home}/data")
-      config = config.sub(/^#?\s*exomiser\.hg19\.data-version=.*$/,     "exomiser.hg19.data-version=#{DATA_VERSION}")
-      config = config.sub(/^#?\s*exomiser\.hg38\.data-version=.*$/,     "exomiser.hg38.data-version=#{DATA_VERSION}")
-      config = config.sub(/^#?\s*exomiser\.phenotype\.data-version=.*$/, "exomiser.phenotype.data-version=#{DATA_VERSION}")
-      (exomiser_home/"application.properties").write config
-    end
+      # Bootstrap ~/.exomiser on first run.
+      if [[ ! -f "${CONFIG_FILE}" ]]; then
+        mkdir -p "${EXOMISER_HOME}/data"
+
+        # Seed application.properties with correct data directory and versions.
+        sed \
+          -e "s|^exomiser\\.data-directory=.*|exomiser.data-directory=${EXOMISER_HOME}/data|" \
+          -e "s|^#\\?\\s*exomiser\\.hg19\\.data-version=.*|exomiser.hg19.data-version=#{DATA_VERSION}|" \
+          -e "s|^#\\?\\s*exomiser\\.hg38\\.data-version=.*|exomiser.hg38.data-version=#{DATA_VERSION}|" \
+          -e "s|^#\\?\\s*exomiser\\.phenotype\\.data-version=.*|exomiser.phenotype.data-version=#{DATA_VERSION}|" \
+          "${TEMPLATE}" > "${CONFIG_FILE}"
+
+        echo "──────────────────────────────────────────────────────────"
+        echo "Exomiser: first-run setup complete."
+        echo "  Config : ${CONFIG_FILE}"
+        echo "  Data   : ${EXOMISER_HOME}/data"
+        echo "  Run 'brew info exomiser/tap/exomiser' for data download instructions."
+        echo "──────────────────────────────────────────────────────────"
+      fi
+
+      exec "#{Formula["openjdk"].opt_bin}/java" \
+        --sun-misc-unsafe-memory-access=allow \
+        ${JAVA_TOOL_OPTIONS:-} \
+        -Dspring.config.location="${CONFIG_FILE}" \
+        -jar "#{libexec}/exomiser-cli-#{version}.jar" \
+        "$@"
+    SHELL
+    chmod 0755, bin/"exomiser"
   end
 
   def caveats
@@ -113,11 +136,4 @@ class Exomiser < Formula
     assert_match version.to_s, output
   end
 
-  private
-
-  # Defined as a method rather than a constant so that Dir.home is evaluated
-  # at runtime (outside the Homebrew sandbox) rather than at load time.
-  def exomiser_home
-    Pathname.new(Dir.home)/".exomiser"
-  end
 end
