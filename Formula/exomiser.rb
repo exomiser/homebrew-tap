@@ -28,13 +28,14 @@ class Exomiser < Formula
       exomiser_data = exomiser_home/"data"
       exomiser_config = exomiser_home/"application.properties"
 
-      exomiser_data.mkpath unless exomiser_data.exist?
+      exomiser_home.mkpath
+      exomiser_data.mkpath
 
       unless exomiser_config.exist?
         config = (libexec/"application.properties").read
-        config = config.sub(/^exomiser\.data-directory=.*$/,             "exomiser.data-directory=#{exomiser_data}")
-        config = config.sub(/^#?\s*exomiser\.hg19\.data-version=.*$/,   "exomiser.hg19.data-version=#{DATA_VERSION}")
-        config = config.sub(/^#?\s*exomiser\.hg38\.data-version=.*$/,   "exomiser.hg38.data-version=#{DATA_VERSION}")
+        config = config.sub(/^exomiser\.data-directory=.*$/,               "exomiser.data-directory=#{exomiser_data}")
+        config = config.sub(/^#?\s*exomiser\.hg19\.data-version=.*$/,      "exomiser.hg19.data-version=#{DATA_VERSION}")
+        config = config.sub(/^#?\s*exomiser\.hg38\.data-version=.*$/,      "exomiser.hg38.data-version=#{DATA_VERSION}")
         config = config.sub(/^#?\s*exomiser\.phenotype\.data-version=.*$/, "exomiser.phenotype.data-version=#{DATA_VERSION}")
         exomiser_config.write config
       end
