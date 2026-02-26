@@ -41,7 +41,7 @@ class Exomiser < Formula
 
         # Seed application.properties with correct data directory and versions.
         sed \
-          -e "s|^exomiser\\.data-directory=.*|exomiser.data-directory=${EXOMISER_HOME}/data|" \
+          -e "s|^#\\?\\s*exomiser\\.data-directory=.*|exomiser.data-directory=${EXOMISER_HOME}/data|" \
           -e "s|^#\\?\\s*exomiser\\.hg19\\.data-version=.*|exomiser.hg19.data-version=#{DATA_VERSION}|" \
           -e "s|^#\\?\\s*exomiser\\.hg38\\.data-version=.*|exomiser.hg38.data-version=#{DATA_VERSION}|" \
           -e "s|^#\\?\\s*exomiser\\.phenotype\\.data-version=.*|exomiser.phenotype.data-version=#{DATA_VERSION}|" \
@@ -111,7 +111,9 @@ class Exomiser < Formula
 
       Once the data is downloaded, confirm everything is working:
 
-        exomiser analyse --analysis #{libexec}/examples/test-analysis-exome.yml
+        exomiser analyse --analysis #{libexec}/examples/preset-exome-analysis.yml \
+         --vcf #{libexec}/examples/Pfeiffer.vcf.gz --assembly hg19 \
+         --sample #{libexec}/examples/pfeiffer-phenopacket.yml 
 
       ─────────────────────────────────────────────────────────────────────
       MEMORY
