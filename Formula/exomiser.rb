@@ -12,7 +12,7 @@ class Exomiser < Formula
   # Distribution zip from GitHub
   # Update the URL and sha256 checksum when a new version is released.
   url "https://github.com/exomiser/Exomiser/releases/download/#{version}/exomiser-cli-#{version}-distribution.zip"
-  sha256 "f33892fa8297be98d8594ef4bdc22735bd9e3a47f00310aef8ffe54f97c66bbe5"
+  sha256 "33892fa8297be98d8594ef4bdc22735bd9e3a47f00310aef8ffe54f97c66bbe5"
 
   license "AGPL-3.0"
 
