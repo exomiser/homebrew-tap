@@ -1,7 +1,7 @@
 class Exomiser < Formula
   desc "Phenotype-driven prioritisation of rare disease causing variants from whole-exome and whole-genome sequencing data"
   homepage "https://github.com/exomiser/Exomiser/"
-  version "14.1.0"
+  version "15.0.0"
 
   # Data release version is independent of the application version.
   # Update both constants when releasing a new version.
@@ -12,7 +12,7 @@ class Exomiser < Formula
   # Distribution zip from GitHub
   # Update the URL and sha256 checksum when a new version is released.
   url "https://github.com/exomiser/Exomiser/releases/download/#{version}/exomiser-cli-#{version}-distribution.zip"
-  sha256 "fb9705017000b448b1331cfd5e1b17c8941713b8c29e4ac30524e96869224db6"
+  sha256 "f33892fa8297be98d8594ef4bdc22735bd9e3a47f00310aef8ffe54f97c66bbe5"
 
   license "AGPL-3.0"
 
